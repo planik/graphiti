@@ -70,15 +70,13 @@ module Graphiti
 
       def allow_request?(request_path, params, action)
         request_path = request_path.split(".")[0]
-
+        has_id = params[:id] || params[:data].try(:[], :id)
+        path = request_path
+        path = path.split("/")
+        # remove the last path element if it is equal to the action (this is mostly the case, except :index) or path contains an id
+        path.pop if (path[-1].to_sym == context_namespace) || has_id
+        path = path.join("/")
         endpoints.any? do |e|
-          has_id = params[:id] || params[:data].try(:[], :id)
-          path = request_path
-          if [:update, :show, :destroy].include?(context_namespace) && has_id
-            path = request_path.split("/")
-            path.pop
-            path = path.join("/")
-          end
           e[:full_path].to_s == path && e[:actions].include?(context_namespace)
         end
       end
