@@ -25,6 +25,9 @@ module Graphiti
     end
 
     def errors
+      if data.is_a? Array
+        return data.first.errors
+      end
       data.errors
     end
 
