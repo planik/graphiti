@@ -25,8 +25,12 @@ module Graphiti
     end
 
     def errors
-      if data.is_a? Array
-        return data.first.errors
+      if data.is_a?(Array)
+        if data.first.nil?
+          return []
+        else
+          return data.first.errors
+        end
       end
       data.errors
     end
